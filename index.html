@@ -44,15 +44,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .field{margin-bottom:16px}
 .field:last-child{margin-bottom:0}
 label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:6px}
-input[type=text],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text-1);background:#fff;font-family:inherit;transition:border .15s}
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
-textarea{min-height:88px;resize:vertical;line-height:1.5}
+input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text-1);background:#fff;font-family:inherit;transition:border .15s}
+input:focus,textarea:focus{outline:none;border-color:var(--teal)}
+textarea{min-height:72px;resize:vertical;line-height:1.5}
 
 .rg{display:flex;flex-direction:column;gap:8px}
 .ri{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;font-size:14px}
 .ri:has(input:checked){border-color:var(--teal);background:var(--teal-l)}
 .ri input{margin-top:2px;accent-color:var(--teal);flex-shrink:0}
 .ri span{line-height:1.4}
+.ri .desc{display:block;font-size:11px;color:var(--text-3);margin-top:2px}
+
+.cg{display:flex;flex-direction:column;gap:8px}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;font-size:14px}
+.ci:has(input:checked){border-color:var(--teal);background:var(--teal-l)}
+.ci input{margin-top:2px;accent-color:var(--teal);flex-shrink:0}
+.ci span{line-height:1.4}
 
 .scale-row{display:flex;gap:6px}
 .sb{flex:1;padding:10px 4px;border:1px solid var(--border);border-radius:var(--r);background:#fff;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;text-align:center;transition:border .15s,background .15s;line-height:1.3}
@@ -60,7 +67,6 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 
 .req{color:var(--red)}
 .hint{font-size:11px;color:var(--text-3);margin-top:4px}
-
 .q-label{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px;display:block}
 .q-sub{font-size:12px;color:var(--text-3);margin-bottom:8px;font-style:italic}
 
@@ -76,9 +82,6 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 .progress-bar{height:3px;background:var(--border);margin:0 12px 4px;border-radius:2px;overflow:hidden}
 .progress-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .3s}
 .progress-label{font-size:11px;color:var(--text-3);text-align:right;margin:0 12px 8px;display:block}
-
-.char-count{font-size:11px;color:var(--text-3);text-align:right;margin-top:3px}
-.char-warn{color:var(--amber)}
 
 .count-box{margin:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-2)}
 .count-box strong{color:var(--text-1)}
@@ -103,7 +106,6 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 <div id="form-view">
   <div style="height:12px"></div>
 
-  <!-- Submission count & export -->
   <div class="count-box">
     <span><strong id="total-count">0</strong> responses saved</span>
     <div style="display:flex;gap:6px">
@@ -113,9 +115,8 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <span class="progress-label" id="prog-label">0 of 7 answered</span>
+  <span class="progress-label" id="prog-label">0 of 8 answered</span>
 
   <!-- Worker details -->
   <div class="section">
@@ -126,66 +127,109 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
     </div>
   </div>
 
-  <!-- Questions -->
+  <!-- Q1: Login -->
   <div class="section">
-    <div class="stitle">Questions — answer in your own words</div>
+    <div class="stitle">Face scan experience</div>
 
     <div class="field">
-      <span class="q-label">Q1. How did logging in with your face feel this morning?</span>
-      <span class="q-sub">Was it easy? Did it work first time?</span>
-      <textarea id="wf-q1" placeholder="Your response…" oninput="countChars('wf-q1','cc1');updateProgress()"></textarea>
-      <div class="char-count" id="cc1"></div>
+      <span class="q-label">Q1. How did the face login go this morning?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q1" value="Worked first time" onchange="updateProgress()"><span>Worked first time — no issues</span></label>
+        <label class="ri"><input type="radio" name="q1" value="Took 2-3 tries" onchange="updateProgress()"><span>Took 2–3 tries but eventually worked</span></label>
+        <label class="ri"><input type="radio" name="q1" value="Used PIN" onchange="updateProgress()"><span>Didn't work — had to use PIN</span></label>
+        <label class="ri"><input type="radio" name="q1" value="Didnt try" onchange="updateProgress()"><span>Didn't try / someone else did it</span></label>
+      </div>
     </div>
 
+    <!-- Q2: Re-verification -->
     <div class="field">
-      <span class="q-label">Q2. Did you see a pop-up asking you to scan your face again during the day?</span>
-      <span class="q-sub">The re-verification prompt — what happened when it appeared?</span>
-      <textarea id="wf-q2" placeholder="Your response…" oninput="countChars('wf-q2','cc2');updateProgress()"></textarea>
-      <div class="char-count" id="cc2"></div>
+      <span class="q-label">Q2. Did you see a re-verification pop-up during the day?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q2" value="Yes — completed" onchange="updateProgress()"><span>Yes — I completed the scan</span></label>
+        <label class="ri"><input type="radio" name="q2" value="Yes — missed/expired" onchange="updateProgress()"><span>Yes — but I missed it / it expired</span></label>
+        <label class="ri"><input type="radio" name="q2" value="No" onchange="updateProgress()"><span>No — I didn't see any pop-up</span></label>
+        <label class="ri"><input type="radio" name="q2" value="Not sure" onchange="updateProgress()"><span>Not sure</span></label>
+      </div>
     </div>
 
+    <!-- Q3: Interruption -->
     <div class="field">
-      <span class="q-label">Q3. Did the re-verification pop-up interrupt your work?</span>
-      <span class="q-sub">What were you doing when it appeared?</span>
-      <textarea id="wf-q3" placeholder="Your response…" oninput="countChars('wf-q3','cc3');updateProgress()"></textarea>
-      <div class="char-count" id="cc3"></div>
-    </div>
-
-    <div class="field">
-      <span class="q-label">Q4. Did anything confuse you or feel difficult today?</span>
-      <span class="q-sub">Any part of the app — logging in, recording, the camera…</span>
-      <textarea id="wf-q4" placeholder="Your response…" oninput="countChars('wf-q4','cc4');updateProgress()"></textarea>
-      <div class="char-count" id="cc4"></div>
-    </div>
-
-    <div class="field">
-      <span class="q-label">Q5. What was the easiest part of using the app today?</span>
-      <textarea id="wf-q5" placeholder="Your response…" oninput="countChars('wf-q5','cc5');updateProgress()"></textarea>
-      <div class="char-count" id="cc5"></div>
-    </div>
-
-    <div class="field">
-      <span class="q-label">Q5b. What was the hardest part?</span>
-      <textarea id="wf-q5b" placeholder="Your response…" oninput="countChars('wf-q5b','cc5b');updateProgress()"></textarea>
-      <div class="char-count" id="cc5b"></div>
+      <span class="q-label">Q3. Did the re-verification interrupt your work?</span>
+      <span class="q-sub">Skip if you didn't see one</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q3" value="No — fine" onchange="updateProgress()"><span>No — it was fine, I wasn't busy</span></label>
+        <label class="ri"><input type="radio" name="q3" value="A little" onchange="updateProgress()"><span>A little — I was in the middle of something</span></label>
+        <label class="ri"><input type="radio" name="q3" value="Yes — disruptive" onchange="updateProgress()"><span>Yes — it was disruptive</span></label>
+        <label class="ri"><input type="radio" name="q3" value="N/A" onchange="updateProgress()"><span>Didn't see one</span></label>
+      </div>
     </div>
   </div>
 
-  <!-- Privacy & Comfort -->
+  <!-- Q4: Difficulties -->
   <div class="section">
-    <div class="stitle">Privacy & comfort</div>
+    <div class="stitle">Difficulties</div>
+    <div class="field">
+      <span class="q-label">Q4. What was difficult or confusing today?</span>
+      <span class="q-sub">Pick all that apply</span>
+      <div class="cg" id="q4-grp">
+        <label class="ci"><input type="checkbox" value="Nothing" onchange="updateProgress()"><span>Nothing — everything was fine</span></label>
+        <label class="ci"><input type="checkbox" value="Face not recognised" onchange="updateProgress()"><span>Face scan didn't recognise me</span></label>
+        <label class="ci"><input type="checkbox" value="Camera slow/froze" onchange="updateProgress()"><span>Camera was slow or froze</span></label>
+        <label class="ci"><input type="checkbox" value="Couldnt find screen" onchange="updateProgress()"><span>Couldn't find the right screen</span></label>
+        <label class="ci"><input type="checkbox" value="Re-verif confused" onchange="updateProgress()"><span>Re-verification confused me</span></label>
+        <label class="ci"><input type="checkbox" value="PIN difficult" onchange="updateProgress()"><span>PIN entry was difficult</span></label>
+        <label class="ci"><input type="checkbox" value="App crash/freeze" onchange="updateProgress()"><span>App crashed or froze</span></label>
+        <label class="ci"><input type="checkbox" value="Connectivity" onchange="updateProgress()"><span>Internet / connectivity issues</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5a & Q5b: Easiest / hardest face scan step -->
+  <div class="section">
+    <div class="stitle">Face scan steps</div>
 
     <div class="field">
-      <label>Q6. Do you have any concerns about your face being scanned or stored?</label>
-      <div class="rg" id="wf-privacy-grp">
-        <label class="ri"><input type="radio" name="wf-privacy" value="No concern" onchange="updateProgress()"><span>No concern</span></label>
-        <label class="ri"><input type="radio" name="wf-privacy" value="Mild — asked a question" onchange="updateProgress()"><span>Mild — I had a question about it</span></label>
-        <label class="ri"><input type="radio" name="wf-privacy" value="Yes — uncomfortable" onchange="updateProgress()"><span>Yes — I feel uncomfortable with it</span></label>
+      <span class="q-label">Q5a. Which face scan step was easiest for you?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q5a" value="Enrollment" onchange="updateProgress()"><span>First-time enrollment<span class="desc">When your face was registered for the first time</span></span></label>
+        <label class="ri"><input type="radio" name="q5a" value="Morning login" onchange="updateProgress()"><span>Morning login<span class="desc">Scanning your face to start the day</span></span></label>
+        <label class="ri"><input type="radio" name="q5a" value="Pop-up verification" onchange="updateProgress()"><span>Pop-up verification<span class="desc">The re-verification prompt that appeared during work</span></span></label>
+        <label class="ri"><input type="radio" name="q5a" value="Ticker verification" onchange="updateProgress()"><span>Ticker verification<span class="desc">Tapping the bar at the top of the screen to scan</span></span></label>
+        <label class="ri"><input type="radio" name="q5a" value="Co-worker verification" onchange="updateProgress()"><span>Co-worker verification<span class="desc">Scanning your helper / co-worker's face on your device</span></span></label>
+        <label class="ri"><input type="radio" name="q5a" value="All equally easy" onchange="updateProgress()"><span>All were equally easy</span></label>
+        <label class="ri"><input type="radio" name="q5a" value="None were easy" onchange="updateProgress()"><span>None were easy</span></label>
       </div>
     </div>
 
     <div class="field">
-      <label>How comfortable did you feel using the app today?</label>
+      <span class="q-label">Q5b. Which gave you the most trouble?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q5b" value="Enrollment" onchange="updateProgress()"><span>First-time enrollment<span class="desc">When your face was registered for the first time</span></span></label>
+        <label class="ri"><input type="radio" name="q5b" value="Morning login" onchange="updateProgress()"><span>Morning login<span class="desc">Scanning your face to start the day</span></span></label>
+        <label class="ri"><input type="radio" name="q5b" value="Pop-up verification" onchange="updateProgress()"><span>Pop-up verification<span class="desc">The re-verification prompt that appeared during work</span></span></label>
+        <label class="ri"><input type="radio" name="q5b" value="Ticker verification" onchange="updateProgress()"><span>Ticker verification<span class="desc">Tapping the bar at the top of the screen to scan</span></span></label>
+        <label class="ri"><input type="radio" name="q5b" value="Co-worker verification" onchange="updateProgress()"><span>Co-worker verification<span class="desc">Scanning your helper / co-worker's face on your device</span></span></label>
+        <label class="ri"><input type="radio" name="q5b" value="All equally hard" onchange="updateProgress()"><span>All were equally difficult</span></label>
+        <label class="ri"><input type="radio" name="q5b" value="None were hard" onchange="updateProgress()"><span>None gave me trouble</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6: Privacy + Comfort -->
+  <div class="section">
+    <div class="stitle">Privacy & comfort</div>
+
+    <div class="field">
+      <span class="q-label">Q6. Do you have any concerns about your face being scanned or stored?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="q6" value="No concern" onchange="updateProgress()"><span>No concern</span></label>
+        <label class="ri"><input type="radio" name="q6" value="Mild — asked a question" onchange="updateProgress()"><span>Mild — I had a question about it</span></label>
+        <label class="ri"><input type="radio" name="q6" value="Yes — uncomfortable" onchange="updateProgress()"><span>Yes — I feel uncomfortable with it</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="q-label">How comfortable did you feel using the app today?</span>
       <div class="hint" style="margin-bottom:8px">1 = very uncomfortable, 5 = fully comfortable</div>
       <div class="scale-row" id="wf-comfort">
         <button class="sb" type="button" onclick="pickScale(this,'1')">1<br><span style="font-size:9px">Uncomf.</span></button>
@@ -194,6 +238,15 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
         <button class="sb" type="button" onclick="pickScale(this,'4')">4</button>
         <button class="sb" type="button" onclick="pickScale(this,'5')">5<br><span style="font-size:9px">Comf.</span></button>
       </div>
+    </div>
+  </div>
+
+  <!-- Optional notes -->
+  <div class="section">
+    <div class="stitle">Anything else?</div>
+    <div class="field">
+      <span class="q-label">Anything else you want to tell us? (optional)</span>
+      <textarea id="wf-notes" placeholder="Anything the choices above didn't cover…"></textarea>
     </div>
   </div>
 
@@ -213,31 +266,23 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
-// PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
-// ═══════════════════════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOv1YwFPm4l_-_MAziktJ_ZtE1bJgah5oSO40MP6jd0HGDsKhniNom2YB9CxFS5oZudg/exec';
-// ═══════════════════════════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbym0_5426GQfX64JiYzbvo6wwxCdUM_EH39JKENAh-jpjzrNbS1Ksjwf61p0AgdQVJwIQ/exec';
 
 let comfortVal = '';
 
-// ── Helpers ────────────────────────────────────────────────────────────────
 function now() { return new Date().toISOString().replace('T',' ').slice(0,19); }
 function getR(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
+function getChecked(sel) { return Array.from(document.querySelectorAll(`${sel} input[type=checkbox]:checked`)).map(cb => cb.value).join(' | '); }
 function getData() { try { return JSON.parse(localStorage.getItem('wf_feedback') || '[]'); } catch { return []; } }
 function setData(arr) { localStorage.setItem('wf_feedback', JSON.stringify(arr)); }
 function getQueue() { try { return JSON.parse(localStorage.getItem('wf_queue') || '[]'); } catch { return []; } }
 function setQueue(arr) { localStorage.setItem('wf_queue', JSON.stringify(arr)); }
 
-// ── Sync UI ────────────────────────────────────────────────────────────────
 function setSyncUI(state, text) {
-  const dot = document.getElementById('sync-dot');
-  const label = document.getElementById('sync-text');
-  dot.className = 'dot dot-' + state;
-  label.textContent = text;
+  document.getElementById('sync-dot').className = 'dot dot-' + state;
+  document.getElementById('sync-text').textContent = text;
 }
 
-// ── Queue + sync ───────────────────────────────────────────────────────────
 function enqueue(rec) {
   const q = getQueue();
   const id = rec.ts + rec.worker;
@@ -262,10 +307,8 @@ function syncOne(rec, onDone) {
 function pushRecord(rec) {
   const all = getData(); all.push(rec); setData(all);
   updateCount();
-
   if (!SCRIPT_URL) { setSyncUI('off', 'Local only'); return; }
   if (!navigator.onLine) { enqueue(rec); setSyncUI('warn', getQueue().length + ' unsynced — offline'); return; }
-
   syncOne(rec, ok => {
     if (ok) setSyncUI('ok', 'Synced just now');
     else { enqueue(rec); setSyncUI('warn', getQueue().length + ' unsynced'); }
@@ -274,11 +317,7 @@ function pushRecord(rec) {
 
 function processQueue(onDone) {
   const q = getQueue();
-  if (!q.length) {
-    setSyncUI('ok', 'All synced');
-    if (onDone) onDone(0);
-    return;
-  }
+  if (!q.length) { setSyncUI('ok', 'All synced'); if (onDone) onDone(0); return; }
   setSyncUI('warn', 'Syncing ' + q.length + '…');
   const failed = [];
   const next = i => {
@@ -289,9 +328,8 @@ function processQueue(onDone) {
       if (onDone) onDone(failed.length);
       return;
     }
-    const item = q[i];
-    syncOne(item.record, ok => {
-      if (!ok) { item._attempts++; failed.push(item); }
+    syncOne(q[i].record, ok => {
+      if (!ok) { q[i]._attempts++; failed.push(q[i]); }
       next(i + 1);
     });
   };
@@ -299,11 +337,11 @@ function processQueue(onDone) {
 }
 
 function forceSync() {
-  if (!SCRIPT_URL) { alert('No sync URL configured. Responses are saved locally — use Export CSV to get data.'); return; }
-  if (!navigator.onLine) { alert('No internet connection. Records are saved locally and will sync when you reconnect.'); return; }
+  if (!SCRIPT_URL) { alert('No sync URL configured.'); return; }
+  if (!navigator.onLine) { alert('No internet. Records saved locally.'); return; }
   processQueue(count => {
     if (count === 0) alert('All records synced successfully.');
-    else alert(count + ' records could not be synced. They will retry when connection improves.');
+    else alert(count + ' records could not be synced.');
   });
 }
 
@@ -312,25 +350,20 @@ function syncAllSaved() {
   if (!navigator.onLine) { alert('No internet connection.'); return; }
   const all = getData();
   if (!all.length) { alert('No saved responses to sync.'); return; }
-  if (!confirm('This will re-send all ' + all.length + ' saved responses to the sheet. Continue?')) return;
+  if (!confirm('Re-send all ' + all.length + ' saved responses to the sheet?')) return;
   setSyncUI('warn', 'Sending ' + all.length + ' records…');
-  let sent = 0;
-  let failed = 0;
+  let sent = 0, fail = 0;
   const next = i => {
     if (i >= all.length) {
       setSyncUI('ok', sent + ' sent');
-      alert('Done — ' + sent + ' synced, ' + failed + ' failed.');
+      alert('Done — ' + sent + ' synced, ' + fail + ' failed.');
       return;
     }
-    syncOne(all[i], ok => {
-      if (ok) sent++; else failed++;
-      next(i + 1);
-    });
+    syncOne(all[i], ok => { if (ok) sent++; else fail++; next(i + 1); });
   };
   next(0);
 }
 
-// ── Form UI ────────────────────────────────────────────────────────────────
 function pickScale(btn, val) {
   document.querySelectorAll('#wf-comfort .sb').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
@@ -338,23 +371,12 @@ function pickScale(btn, val) {
   updateProgress();
 }
 
-function countChars(id, countId) {
-  const el = document.getElementById(id);
-  const cc = document.getElementById(countId);
-  const n = el.value.length;
-  cc.textContent = n > 0 ? n + ' characters' : '';
-  cc.className = 'char-count' + (n > 500 ? ' char-warn' : '');
-}
-
 function updateProgress() {
   const fields = [
     document.getElementById('wf-worker').value.trim(),
-    document.getElementById('wf-q1').value.trim(),
-    document.getElementById('wf-q2').value.trim(),
-    document.getElementById('wf-q3').value.trim(),
-    document.getElementById('wf-q4').value.trim(),
-    document.getElementById('wf-q5').value.trim(),
-    document.getElementById('wf-q5b').value.trim(),
+    getR('q1'), getR('q2'), getR('q3'),
+    getChecked('#q4-grp'),
+    getR('q5a'), getR('q5b'), getR('q6')
   ];
   const filled = fields.filter(Boolean).length;
   const pct = Math.round((filled / fields.length) * 100);
@@ -380,14 +402,15 @@ function submitFeedback() {
   const rec = {
     ts: now(),
     worker,
-    q1_login_feel: document.getElementById('wf-q1').value,
-    q2_reverif_seen: document.getElementById('wf-q2').value,
-    q3_reverif_interrupt: document.getElementById('wf-q3').value,
-    q4_confusion: document.getElementById('wf-q4').value,
-    q5_easiest: document.getElementById('wf-q5').value,
-    q5b_hardest: document.getElementById('wf-q5b').value,
-    privacy_concern: getR('wf-privacy'),
+    q1_login: getR('q1'),
+    q2_reverif_seen: getR('q2'),
+    q3_reverif_interrupt: getR('q3'),
+    q4_difficulties: getChecked('#q4-grp'),
+    q5a_easiest_step: getR('q5a'),
+    q5b_hardest_step: getR('q5b'),
+    q6_privacy: getR('q6'),
     comfort_rating: comfortVal,
+    notes: document.getElementById('wf-notes').value,
   };
 
   pushRecord(rec);
@@ -405,13 +428,9 @@ function submitFeedback() {
 
 function resetForm() {
   document.getElementById('wf-worker').value = '';
+  document.getElementById('wf-notes').value = '';
   document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
-  ['wf-q1','wf-q2','wf-q3','wf-q4','wf-q5','wf-q5b'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  ['cc1','cc2','cc3','cc4','cc5','cc5b'].forEach(id => {
-    document.getElementById(id).textContent = '';
-  });
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
   document.querySelectorAll('.sb').forEach(b => b.classList.remove('sel'));
   comfortVal = '';
   updateProgress();
@@ -420,7 +439,6 @@ function resetForm() {
   window.scrollTo(0, 0);
 }
 
-// ── CSV export ─────────────────────────────────────────────────────────────
 function exportCSV() {
   const data = getData();
   if (!data.length) return alert('No records to export.');
@@ -432,30 +450,19 @@ function exportCSV() {
   a.click();
 }
 
-// ── Init + background sync ─────────────────────────────────────────────────
 (function init() {
   updateCount();
   const q = getQueue();
   if (!SCRIPT_URL) setSyncUI('off', 'Local only');
   else if (q.length === 0) setSyncUI('ok', 'All synced');
   else setSyncUI('warn', q.length + ' unsynced');
-
   if (SCRIPT_URL && navigator.onLine && q.length > 0) processQueue();
-
-  window.addEventListener('online', () => {
-    setSyncUI('warn', 'Back online — syncing…');
-    setTimeout(() => processQueue(), 1000);
-  });
+  window.addEventListener('online', () => { setSyncUI('warn', 'Back online — syncing…'); setTimeout(() => processQueue(), 1000); });
   window.addEventListener('offline', () => setSyncUI('warn', 'Offline — saving locally'));
-
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && SCRIPT_URL && navigator.onLine && getQueue().length > 0)
-      setTimeout(() => processQueue(), 800);
+    if (!document.hidden && SCRIPT_URL && navigator.onLine && getQueue().length > 0) setTimeout(() => processQueue(), 800);
   });
-
-  setInterval(() => {
-    if (SCRIPT_URL && navigator.onLine && getQueue().length > 0) processQueue();
-  }, 3 * 60 * 1000);
+  setInterval(() => { if (SCRIPT_URL && navigator.onLine && getQueue().length > 0) processQueue(); }, 3 * 60 * 1000);
 })();
 </script>
 </body>
