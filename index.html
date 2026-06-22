@@ -106,7 +106,10 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
   <!-- Submission count & export -->
   <div class="count-box">
     <span><strong id="total-count">0</strong> responses saved</span>
-    <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
+    <div style="display:flex;gap:6px">
+      <button class="export-btn" onclick="forceSync()" style="background:var(--amber-l);color:var(--amber);border-color:var(--amber)">⟳ Sync now</button>
+      <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
+    </div>
   </div>
 
   <!-- Progress -->
@@ -212,7 +215,7 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 // ═══════════════════════════════════════════════════════════════════════════
 // PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
 // ═══════════════════════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyh6BOLMJsfQPpHU0FAp_rMLRQVVIkrp1o-lXL0-7aFtJ97CcLcfx8aACFkXW6w42yEVg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyKaQqGs2lyksn-dEev3hGU6fO7dqStxyrq1lvbW1keY5vCgrto-pffTHFEdJAA32I9/exec';
 // ═══════════════════════════════════════════════════════════════════════════
 
 let comfortVal = '';
