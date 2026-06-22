@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Worker Feedback">
 <title>SMC Worker Feedback</title>
@@ -108,6 +108,7 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
     <span><strong id="total-count">0</strong> responses saved</span>
     <div style="display:flex;gap:6px">
       <button class="export-btn" onclick="forceSync()" style="background:var(--amber-l);color:var(--amber);border-color:var(--amber)">⟳ Sync now</button>
+      <button class="export-btn" onclick="syncAllSaved()" style="background:var(--red-l);color:var(--red);border-color:var(--red)">⟳ Sync all saved</button>
       <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
     </div>
   </div>
@@ -215,7 +216,7 @@ textarea{min-height:88px;resize:vertical;line-height:1.5}
 // ═══════════════════════════════════════════════════════════════════════════
 // PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
 // ═══════════════════════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiuCIStKYvyoKxWSlhZOVEhwx4kQJJTwgJ6G1w628f1PweFMUctQUfQinOvQIl-x-JKg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOv1YwFPm4l_-_MAziktJ_ZtE1bJgah5oSO40MP6jd0HGDsKhniNom2YB9CxFS5oZudg/exec';
 // ═══════════════════════════════════════════════════════════════════════════
 
 let comfortVal = '';
@@ -236,7 +237,7 @@ function setSyncUI(state, text) {
   label.textContent = text;
 }
 
-// ── Queue + sync (same pattern as main app) ────────────────────────────────
+// ── Queue + sync ───────────────────────────────────────────────────────────
 function enqueue(rec) {
   const q = getQueue();
   const id = rec.ts + rec.worker;
@@ -250,20 +251,18 @@ function syncOne(rec, onDone) {
   if (!SCRIPT_URL) { onDone(false); return; }
   fetch(SCRIPT_URL, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ type: 'worker_feedback', record: rec })
   })
-  .then(r => r.json())
-  .then(d => onDone(d.status === 'ok'))
+  .then(() => onDone(true))
   .catch(() => onDone(false));
 }
 
 function pushRecord(rec) {
-  // Save locally always
   const all = getData(); all.push(rec); setData(all);
   updateCount();
 
-  // Try to sync immediately
   if (!SCRIPT_URL) { setSyncUI('off', 'Local only'); return; }
   if (!navigator.onLine) { enqueue(rec); setSyncUI('warn', getQueue().length + ' unsynced — offline'); return; }
 
@@ -306,6 +305,29 @@ function forceSync() {
     if (count === 0) alert('All records synced successfully.');
     else alert(count + ' records could not be synced. They will retry when connection improves.');
   });
+}
+
+function syncAllSaved() {
+  if (!SCRIPT_URL) { alert('No sync URL configured.'); return; }
+  if (!navigator.onLine) { alert('No internet connection.'); return; }
+  const all = getData();
+  if (!all.length) { alert('No saved responses to sync.'); return; }
+  if (!confirm('This will re-send all ' + all.length + ' saved responses to the sheet. Continue?')) return;
+  setSyncUI('warn', 'Sending ' + all.length + ' records…');
+  let sent = 0;
+  let failed = 0;
+  const next = i => {
+    if (i >= all.length) {
+      setSyncUI('ok', sent + ' sent');
+      alert('Done — ' + sent + ' synced, ' + failed + ' failed.');
+      return;
+    }
+    syncOne(all[i], ok => {
+      if (ok) sent++; else failed++;
+      next(i + 1);
+    });
+  };
+  next(0);
 }
 
 // ── Form UI ────────────────────────────────────────────────────────────────
@@ -371,7 +393,6 @@ function submitFeedback() {
   pushRecord(rec);
   showToast('✓ Feedback saved');
 
-  // Show sync status on done screen
   const q = getQueue();
   const msg = document.getElementById('done-sync-msg');
   if (!SCRIPT_URL) msg.textContent = 'Saved locally. Use Export CSV to get data.';
@@ -419,23 +440,19 @@ function exportCSV() {
   else if (q.length === 0) setSyncUI('ok', 'All synced');
   else setSyncUI('warn', q.length + ' unsynced');
 
-  // Auto-process queue on load
   if (SCRIPT_URL && navigator.onLine && q.length > 0) processQueue();
 
-  // Retry on reconnect
   window.addEventListener('online', () => {
     setSyncUI('warn', 'Back online — syncing…');
     setTimeout(() => processQueue(), 1000);
   });
   window.addEventListener('offline', () => setSyncUI('warn', 'Offline — saving locally'));
 
-  // Retry on tab focus
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && SCRIPT_URL && navigator.onLine && getQueue().length > 0)
       setTimeout(() => processQueue(), 800);
   });
 
-  // Periodic retry every 3 minutes
   setInterval(() => {
     if (SCRIPT_URL && navigator.onLine && getQueue().length > 0) processQueue();
   }, 3 * 60 * 1000);
