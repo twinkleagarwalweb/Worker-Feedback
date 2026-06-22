@@ -23,9 +23,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .app{max-width:480px;margin:0 auto;padding:0 0 40px}
 
 .header{background:var(--navy);color:#fff;padding:14px 16px 12px;position:sticky;top:0;z-index:10}
+.hrow{display:flex;justify-content:space-between;align-items:center}
 .header h1{font-size:17px;font-weight:700;letter-spacing:.01em}
 .header h1 span{font-size:12px;font-weight:400;opacity:.6;margin-left:6px}
 .header p{font-size:12px;opacity:.55;margin-top:3px}
+
+.sync-pill{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.dot-ok{background:#4ade80}
+.dot-warn{background:var(--amber);animation:pulse 1.5s infinite}
+.dot-off{background:var(--text-3)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:#222;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:100}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -39,7 +47,6 @@ label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bo
 input[type=text],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text-1);background:#fff;font-family:inherit;transition:border .15s}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--teal)}
 textarea{min-height:88px;resize:vertical;line-height:1.5}
-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239ba3b2' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 
 .rg{display:flex;flex-direction:column;gap:8px}
 .ri{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;font-size:14px}
@@ -72,19 +79,35 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 .char-count{font-size:11px;color:var(--text-3);text-align:right;margin-top:3px}
 .char-warn{color:var(--amber)}
+
+.count-box{margin:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-2)}
+.count-box strong{color:var(--text-1)}
+.export-btn{padding:5px 12px;background:var(--teal-l);color:var(--teal);border:1px solid var(--teal);border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="app" id="app">
 
 <div class="header">
-  <h1>Worker Feedback <span>SMC Campaign</span></h1>
-  <p>Responses are saved automatically and sent to the research team.</p>
+  <div class="hrow">
+    <h1>Worker Feedback <span>SMC Campaign</span></h1>
+    <div class="sync-pill" onclick="forceSync()">
+      <span class="dot dot-off" id="sync-dot"></span>
+      <span id="sync-text">checking…</span>
+    </div>
+  </div>
+  <p>Responses saved offline and synced automatically.</p>
 </div>
 <div id="toast" class="toast">✓ Feedback submitted</div>
 
 <div id="form-view">
   <div style="height:12px"></div>
+
+  <!-- Submission count & export -->
+  <div class="count-box">
+    <span><strong id="total-count">0</strong> responses saved</span>
+    <button class="export-btn" onclick="exportCSV()">↓ Export CSV</button>
+  </div>
 
   <!-- Progress -->
   <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
@@ -97,7 +120,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <label>Worker ID / name <span class="req">*</span></label>
       <input type="text" id="wf-worker" placeholder="e.g. W01 — Amara" oninput="updateProgress()">
     </div>
-
   </div>
 
   <!-- Questions -->
@@ -171,7 +193,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     </div>
   </div>
 
-  <button class="btn-p" onclick="submit()">Submit feedback</button>
+  <button class="btn-p" onclick="submitFeedback()">Submit feedback</button>
   <div style="height:8px"></div>
 </div>
 
@@ -180,16 +202,110 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="icon">✅</div>
   <h2>Thank you!</h2>
   <p>Your feedback has been recorded.<br>It helps us improve the app for you and your colleagues.</p>
+  <p id="done-sync-msg" style="margin-top:12px;font-size:12px;color:var(--text-3)"></p>
   <button class="btn-another" onclick="resetForm()">Submit another response</button>
 </div>
 
 </div>
 
 <script>
-const SCRIPT_URL = ''; // ← paste your Google Apps Script URL here
+// ═══════════════════════════════════════════════════════════════════════════
+// PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
+// ═══════════════════════════════════════════════════════════════════════════
+const SCRIPT_URL = '';
+// ═══════════════════════════════════════════════════════════════════════════
 
 let comfortVal = '';
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+function now() { return new Date().toISOString().replace('T',' ').slice(0,19); }
+function getR(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; }
+function getData() { try { return JSON.parse(localStorage.getItem('wf_feedback') || '[]'); } catch { return []; } }
+function setData(arr) { localStorage.setItem('wf_feedback', JSON.stringify(arr)); }
+function getQueue() { try { return JSON.parse(localStorage.getItem('wf_queue') || '[]'); } catch { return []; } }
+function setQueue(arr) { localStorage.setItem('wf_queue', JSON.stringify(arr)); }
+
+// ── Sync UI ────────────────────────────────────────────────────────────────
+function setSyncUI(state, text) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-text');
+  dot.className = 'dot dot-' + state;
+  label.textContent = text;
+}
+
+// ── Queue + sync (same pattern as main app) ────────────────────────────────
+function enqueue(rec) {
+  const q = getQueue();
+  const id = rec.ts + rec.worker;
+  if (q.some(i => (i.record.ts + i.record.worker) === id)) return;
+  q.push({ type: 'worker_feedback', record: rec, queued_at: now(), _attempts: 0 });
+  setQueue(q);
+  setSyncUI('warn', q.length + ' unsynced');
+}
+
+function syncOne(rec, onDone) {
+  if (!SCRIPT_URL) { onDone(false); return; }
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ type: 'worker_feedback', record: rec })
+  })
+  .then(r => r.json())
+  .then(d => onDone(d.status === 'ok'))
+  .catch(() => onDone(false));
+}
+
+function pushRecord(rec) {
+  // Save locally always
+  const all = getData(); all.push(rec); setData(all);
+  updateCount();
+
+  // Try to sync immediately
+  if (!SCRIPT_URL) { setSyncUI('off', 'Local only'); return; }
+  if (!navigator.onLine) { enqueue(rec); setSyncUI('warn', getQueue().length + ' unsynced — offline'); return; }
+
+  syncOne(rec, ok => {
+    if (ok) setSyncUI('ok', 'Synced just now');
+    else { enqueue(rec); setSyncUI('warn', getQueue().length + ' unsynced'); }
+  });
+}
+
+function processQueue(onDone) {
+  const q = getQueue();
+  if (!q.length) {
+    setSyncUI('ok', 'All synced');
+    if (onDone) onDone(0);
+    return;
+  }
+  setSyncUI('warn', 'Syncing ' + q.length + '…');
+  const failed = [];
+  const next = i => {
+    if (i >= q.length) {
+      setQueue(failed);
+      if (failed.length === 0) setSyncUI('ok', 'All synced');
+      else setSyncUI('warn', failed.length + ' unsynced');
+      if (onDone) onDone(failed.length);
+      return;
+    }
+    const item = q[i];
+    syncOne(item.record, ok => {
+      if (!ok) { item._attempts++; failed.push(item); }
+      next(i + 1);
+    });
+  };
+  next(0);
+}
+
+function forceSync() {
+  if (!SCRIPT_URL) { alert('No sync URL configured. Responses are saved locally — use Export CSV to get data.'); return; }
+  if (!navigator.onLine) { alert('No internet connection. Records are saved locally and will sync when you reconnect.'); return; }
+  processQueue(count => {
+    if (count === 0) alert('All records synced successfully.');
+    else alert(count + ' records could not be synced. They will retry when connection improves.');
+  });
+}
+
+// ── Form UI ────────────────────────────────────────────────────────────────
 function pickScale(btn, val) {
   document.querySelectorAll('#wf-comfort .sb').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
@@ -203,15 +319,6 @@ function countChars(id, countId) {
   const n = el.value.length;
   cc.textContent = n > 0 ? n + ' characters' : '';
   cc.className = 'char-count' + (n > 500 ? ' char-warn' : '');
-}
-
-function getR(name) {
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : '';
-}
-
-function now() {
-  return new Date().toISOString().replace('T',' ').slice(0,19);
 }
 
 function updateProgress() {
@@ -230,6 +337,10 @@ function updateProgress() {
   document.getElementById('prog-label').textContent = filled + ' of ' + fields.length + ' answered';
 }
 
+function updateCount() {
+  document.getElementById('total-count').textContent = getData().length;
+}
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -237,38 +348,32 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-function submit() {
+function submitFeedback() {
   const worker = document.getElementById('wf-worker').value.trim();
   if (!worker) return alert('Please enter your worker ID or name.');
 
   const rec = {
     ts: now(),
     worker,
-    q1: document.getElementById('wf-q1').value,
-    q2: document.getElementById('wf-q2').value,
-    q3: document.getElementById('wf-q3').value,
-    q4: document.getElementById('wf-q4').value,
-    q5: document.getElementById('wf-q5').value,
-    q5b: document.getElementById('wf-q5b').value,
+    q1_login_feel: document.getElementById('wf-q1').value,
+    q2_reverif_seen: document.getElementById('wf-q2').value,
+    q3_reverif_interrupt: document.getElementById('wf-q3').value,
+    q4_confusion: document.getElementById('wf-q4').value,
+    q5_easiest: document.getElementById('wf-q5').value,
+    q5b_hardest: document.getElementById('wf-q5b').value,
     privacy_concern: getR('wf-privacy'),
     comfort_rating: comfortVal,
   };
 
-  // Save locally
-  try {
-    const existing = JSON.parse(localStorage.getItem('smc_feedback') || '[]');
-    existing.push(rec);
-    localStorage.setItem('smc_feedback', JSON.stringify(existing));
-  } catch(e) {}
+  pushRecord(rec);
+  showToast('✓ Feedback saved');
 
-  // Send to Google Apps Script if configured
-  if (SCRIPT_URL) {
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ type: 'feedback', record: rec })
-    }).catch(() => {});
-  }
+  // Show sync status on done screen
+  const q = getQueue();
+  const msg = document.getElementById('done-sync-msg');
+  if (!SCRIPT_URL) msg.textContent = 'Saved locally. Use Export CSV to get data.';
+  else if (q.length === 0) msg.textContent = 'Synced to Google Sheet ✓';
+  else msg.textContent = q.length + ' response(s) queued — will sync when online.';
 
   document.getElementById('form-view').style.display = 'none';
   document.getElementById('done-view').style.display = 'block';
@@ -290,6 +395,48 @@ function resetForm() {
   document.getElementById('form-view').style.display = 'block';
   window.scrollTo(0, 0);
 }
+
+// ── CSV export ─────────────────────────────────────────────────────────────
+function exportCSV() {
+  const data = getData();
+  if (!data.length) return alert('No records to export.');
+  const cols = Object.keys(data[0]);
+  const rows = [cols.join(','), ...data.map(r => cols.map(k => `"${String(r[k] || '').replace(/"/g, '""')}"`).join(','))];
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([rows.join('\r\n')], { type: 'text/csv' }));
+  a.download = `worker_feedback_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+}
+
+// ── Init + background sync ─────────────────────────────────────────────────
+(function init() {
+  updateCount();
+  const q = getQueue();
+  if (!SCRIPT_URL) setSyncUI('off', 'Local only');
+  else if (q.length === 0) setSyncUI('ok', 'All synced');
+  else setSyncUI('warn', q.length + ' unsynced');
+
+  // Auto-process queue on load
+  if (SCRIPT_URL && navigator.onLine && q.length > 0) processQueue();
+
+  // Retry on reconnect
+  window.addEventListener('online', () => {
+    setSyncUI('warn', 'Back online — syncing…');
+    setTimeout(() => processQueue(), 1000);
+  });
+  window.addEventListener('offline', () => setSyncUI('warn', 'Offline — saving locally'));
+
+  // Retry on tab focus
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && SCRIPT_URL && navigator.onLine && getQueue().length > 0)
+      setTimeout(() => processQueue(), 800);
+  });
+
+  // Periodic retry every 3 minutes
+  setInterval(() => {
+    if (SCRIPT_URL && navigator.onLine && getQueue().length > 0) processQueue();
+  }, 3 * 60 * 1000);
+})();
 </script>
 </body>
 </html>
