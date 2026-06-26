@@ -21,68 +21,52 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text-1);font-size:15px;line-height:1.5;min-height:100vh}
 .app{max-width:480px;margin:0 auto;padding:0 0 40px}
-
 .header{background:var(--navy);color:#fff;padding:14px 16px 12px;position:sticky;top:0;z-index:10}
 .hrow{display:flex;justify-content:space-between;align-items:center}
 .header h1{font-size:17px;font-weight:700;letter-spacing:.01em}
 .header h1 span{font-size:12px;font-weight:400;opacity:.6;margin-left:6px}
 .header p{font-size:12px;opacity:.55;margin-top:3px}
-
 .sync-pill{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-.dot-ok{background:#4ade80}
-.dot-warn{background:var(--amber);animation:pulse 1.5s infinite}
-.dot-off{background:var(--text-3)}
+.dot-ok{background:#4ade80}.dot-warn{background:var(--amber);animation:pulse 1.5s infinite}.dot-off{background:var(--text-3)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
 .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);background:#222;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:100}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 .section{background:var(--card);border-radius:var(--rl);margin:12px;padding:16px;border:1px solid var(--border)}
 .stitle{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
-
-.field{margin-bottom:16px}
-.field:last-child{margin-bottom:0}
+.field{margin-bottom:16px}.field:last-child{margin-bottom:0}
 label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:6px}
 input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text-1);background:#fff;font-family:inherit;transition:border .15s}
 input:focus,textarea:focus{outline:none;border-color:var(--teal)}
 textarea{min-height:72px;resize:vertical;line-height:1.5}
-
 .rg{display:flex;flex-direction:column;gap:8px}
 .ri{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;font-size:14px}
 .ri:has(input:checked){border-color:var(--teal);background:var(--teal-l)}
 .ri input{margin-top:2px;accent-color:var(--teal);flex-shrink:0}
 .ri span{line-height:1.4}
 .ri .desc{display:block;font-size:11px;color:var(--text-3);margin-top:2px}
-
 .cg{display:flex;flex-direction:column;gap:8px}
 .ci{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border .15s,background .15s;font-size:14px}
 .ci:has(input:checked){border-color:var(--teal);background:var(--teal-l)}
 .ci input{margin-top:2px;accent-color:var(--teal);flex-shrink:0}
 .ci span{line-height:1.4}
-
 .scale-row{display:flex;gap:6px}
 .sb{flex:1;padding:10px 4px;border:1px solid var(--border);border-radius:var(--r);background:#fff;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;text-align:center;transition:border .15s,background .15s;line-height:1.3}
 .sb.sel{border-color:var(--teal);background:var(--teal-l);color:var(--teal)}
-
 .req{color:var(--red)}
 .hint{font-size:11px;color:var(--text-3);margin-top:4px}
 .q-label{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px;display:block}
 .q-sub{font-size:12px;color:var(--text-3);margin-bottom:8px;font-style:italic}
-
 .btn-p{width:calc(100% - 24px);margin:4px 12px 0;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:var(--rl);font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
 .btn-p:active{background:#248277}
-
 .submitted{display:none;text-align:center;padding:48px 24px}
 .submitted .icon{font-size:48px;margin-bottom:16px}
 .submitted h2{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px}
 .submitted p{font-size:14px;color:var(--text-2);line-height:1.6}
 .btn-another{margin-top:24px;padding:12px 28px;background:var(--teal);color:#fff;border:none;border-radius:var(--rl);font-size:15px;font-weight:600;cursor:pointer}
-
 .progress-bar{height:3px;background:var(--border);margin:0 12px 4px;border-radius:2px;overflow:hidden}
 .progress-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .3s}
 .progress-label{font-size:11px;color:var(--text-3);text-align:right;margin:0 12px 8px;display:block}
-
 .count-box{margin:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-2)}
 .count-box strong{color:var(--text-1)}
 .export-btn{padding:5px 12px;background:var(--teal-l);color:var(--teal);border:1px solid var(--teal);border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer}
@@ -116,7 +100,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
   </div>
 
   <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <span class="progress-label" id="prog-label">0 of 8 answered</span>
+  <span class="progress-label" id="prog-label">0 of 11 answered</span>
 
   <!-- Worker details -->
   <div class="section">
@@ -127,7 +111,57 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
     </div>
   </div>
 
-  <!-- Q1: Login -->
+  <!-- Device info -->
+  <div class="section">
+    <div class="stitle">Your phone</div>
+
+    <div class="field">
+      <span class="q-label">What brand is your phone?</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="dev-brand" value="Samsung" onchange="updateProgress()"><span>Samsung</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Tecno" onchange="updateProgress()"><span>Tecno</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Infinix" onchange="updateProgress()"><span>Infinix</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Itel" onchange="updateProgress()"><span>Itel</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Nokia" onchange="updateProgress()"><span>Nokia</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Xiaomi / Redmi" onchange="updateProgress()"><span>Xiaomi / Redmi</span></label>
+        <label class="ri"><input type="radio" name="dev-brand" value="Other" onchange="updateProgress()"><span>Other</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Model name (optional)</label>
+      <input type="text" id="dev-model" placeholder="e.g. Galaxy A14, Spark 10">
+      <div class="hint">Check the back of your phone or go to Settings → About Phone</div>
+    </div>
+
+    <div class="field">
+      <span class="q-label">How much storage does your phone have?</span>
+      <span class="q-sub">Settings → About Phone → Storage</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="dev-storage" value="16 GB" onchange="updateProgress()"><span>16 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-storage" value="32 GB" onchange="updateProgress()"><span>32 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-storage" value="64 GB" onchange="updateProgress()"><span>64 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-storage" value="128 GB" onchange="updateProgress()"><span>128 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-storage" value="256 GB+" onchange="updateProgress()"><span>256 GB or more</span></label>
+        <label class="ri"><input type="radio" name="dev-storage" value="Dont know" onchange="updateProgress()"><span>I don't know</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="q-label">How much RAM does your phone have?</span>
+      <span class="q-sub">Settings → About Phone → RAM</span>
+      <div class="rg">
+        <label class="ri"><input type="radio" name="dev-ram" value="2 GB" onchange="updateProgress()"><span>2 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-ram" value="3 GB" onchange="updateProgress()"><span>3 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-ram" value="4 GB" onchange="updateProgress()"><span>4 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-ram" value="6 GB" onchange="updateProgress()"><span>6 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-ram" value="8 GB" onchange="updateProgress()"><span>8 GB</span></label>
+        <label class="ri"><input type="radio" name="dev-ram" value="Dont know" onchange="updateProgress()"><span>I don't know</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1–Q3: Face scan experience -->
   <div class="section">
     <div class="stitle">Face scan experience</div>
 
@@ -141,7 +175,6 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
       </div>
     </div>
 
-    <!-- Q2: Re-verification -->
     <div class="field">
       <span class="q-label">Q2. Did you see a re-verification pop-up during the day?</span>
       <div class="rg">
@@ -152,7 +185,6 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
       </div>
     </div>
 
-    <!-- Q3: Interruption -->
     <div class="field">
       <span class="q-label">Q3. Did the re-verification interrupt your work?</span>
       <span class="q-sub">Skip if you didn't see one</span>
@@ -266,7 +298,7 @@ textarea{min-height:72px;resize:vertical;line-height:1.5}
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbym0_5426GQfX64JiYzbvo6wwxCdUM_EH39JKENAh-jpjzrNbS1Ksjwf61p0AgdQVJwIQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbztHx5IEI9XK0dAPv9FUpQg9Z_hQhcxybQa-kcA40G7zE9PzKNcQAUmLv8hgkCxIhpchQ/exec';
 
 let comfortVal = '';
 
@@ -374,6 +406,7 @@ function pickScale(btn, val) {
 function updateProgress() {
   const fields = [
     document.getElementById('wf-worker').value.trim(),
+    getR('dev-brand'), getR('dev-storage'), getR('dev-ram'),
     getR('q1'), getR('q2'), getR('q3'),
     getChecked('#q4-grp'),
     getR('q5a'), getR('q5b'), getR('q6')
@@ -402,6 +435,10 @@ function submitFeedback() {
   const rec = {
     ts: now(),
     worker,
+    device_brand: getR('dev-brand'),
+    device_model: document.getElementById('dev-model').value,
+    device_storage: getR('dev-storage'),
+    device_ram: getR('dev-ram'),
     q1_login: getR('q1'),
     q2_reverif_seen: getR('q2'),
     q3_reverif_interrupt: getR('q3'),
@@ -428,6 +465,7 @@ function submitFeedback() {
 
 function resetForm() {
   document.getElementById('wf-worker').value = '';
+  document.getElementById('dev-model').value = '';
   document.getElementById('wf-notes').value = '';
   document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
   document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
